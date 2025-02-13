@@ -14,9 +14,9 @@ from pathlib import Path
 import os
 
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -144,5 +144,5 @@ REST_FRAMEWORK = {
     ],
 }
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'bookstore-api.dokku.com']
+SECRET_KEY = os.getenv('SECRET_KEY')
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'bookstore-api.dokku.me']
