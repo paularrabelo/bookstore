@@ -21,8 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# Application definition
 
+SECRET_KEY = "django-insecure-8vk77g549e+=-j+tgye!q(i#a!oq!jdzw109ez=c@^p)i3s_no"
+
+DEBUG = True
+
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -40,7 +44,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -48,6 +51,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "bookstore.urls"
@@ -70,9 +74,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "bookstore.wsgi.application"
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -143,6 +148,4 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
-
-SECRET_KEY = os.getenv('SECRET_KEY')
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'bookstore-api.dokku.me']
