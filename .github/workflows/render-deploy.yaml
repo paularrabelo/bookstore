@@ -27,13 +27,15 @@ jobs:
         python -m pip install poetry==${{ matrix.poetry-version }}  # Instala a versão do Poetry definida na matriz
     - name: Verificar instalação do Poetry
       run: poetry --help  
+			
     - name: Instalar dependências
       run: poetry install  
+
     - name: Executar testes
-      run: poetry run python manage.py test  
+      run: run python manage.py test  
 
     - name: Executar migrações
-      run: poetry run python manage.py migrate  
+      run: python manage.py migrate  
       env:
         SQL_HOST: ${{ secrets.SQL_HOST }}  
         SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
@@ -50,3 +52,14 @@ jobs:
         with:
           service-id: ${{ secrets.RENDER_SERVICE_ID }}  
           api-key: ${{ secrets.RENDER_API_KEY }}  
+
+      - name: Executar migrações após o deploy
+        run: |
+          curl -X POST https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys \
+          -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "clearCache": "do_not_clear",
+            "commit": "${{ github.sha }}",
+            "command": "python manage.py migrate"
+          }'
