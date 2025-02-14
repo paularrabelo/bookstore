@@ -25,6 +25,7 @@ jobs:
         python -m ensurepip
         python -m pip install --upgrade pip
         python -m pip install poetry==${{ matrix.poetry-version }}  # Instala a versão do Poetry definida na matriz
+
     - name: Verificar instalação do Poetry
       run: poetry --help  
 			
