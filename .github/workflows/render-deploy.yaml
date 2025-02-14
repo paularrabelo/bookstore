@@ -12,11 +12,17 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
       - name: Deploy Render
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
           service-id: ${{ secrets.RENDER_SERVICE_ID }}
           api-key: ${{ secrets.RENDER_API_KEY }}
+
+      - name: Aguardar conclusão do deploy
+        run: sleep 60  
 
       - name: Executar migrações após o deploy
         run: |
@@ -26,6 +32,5 @@ jobs:
           -d '{
             "clearCache": "do_not_clear",
             "commit": "${{ github.sha }}",
-            "command": "python manage.py makemigrations"
-            "command": "python manage.py migrate"
+            "command": "python manage.py makemigrations && python manage.py migrate"
           }'
