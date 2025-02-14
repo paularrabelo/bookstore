@@ -26,5 +26,5 @@ jobs:
           -d '{
             "clearCache": "do_not_clear",
             "commit": "${{ github.sha }}",
-            "command": "python manage.py migrate"
+            "command": "poetry run python manage.py migrate"
           }'
