@@ -5,7 +5,7 @@ description = ""
 authors = ["Paula Rabelo <paula_rabelo2010@hotmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.10"
 Django = "^5.1.5"
 pytest = "^8.3.4"
 factory-boy = "^3.3.1"
