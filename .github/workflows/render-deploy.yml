@@ -15,7 +15,11 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.12'  # Escolha a versão do Python que sua aplicação usa
+          python-version: '3.12'
+
+      - name: Install Render CLI
+        run: |
+          npm install -g @renderinc/cli
 
       - name: Configure Render
         run: |
