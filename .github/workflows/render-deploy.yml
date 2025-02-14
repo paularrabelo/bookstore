@@ -23,22 +23,9 @@ jobs:
           curl -fsSL https://raw.githubusercontent.com/render-oss/cli/refs/heads/main/bin/install.sh | sh
 
       - name: Configure Render
-        run: |
-          # Configure o Render CLI com a chave de API
-          render config set --api-key $RENDER_API_KEY
         env:
+          # The CLI can authenticate via a Render API key without logging in.
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-
-      - name: Deploy to Render
+          CI: true
         run: |
-          # Implante o serviço no Render
-          render services deploy --service $RENDER_SERVICE_ID --confirm
-        env:
-          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
-
-      - name: Run Migrations
-        run: |
-          # Execute as migrações no banco de dados
-          render services exec --service $RENDER_SERVICE_ID -- python manage.py migrate
-        env:
-          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+          render deploys create ${{ secrets.RENDER_SERVICE_ID }} --output yml --confirm
