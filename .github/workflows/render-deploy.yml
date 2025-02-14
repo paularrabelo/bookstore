@@ -19,7 +19,7 @@ jobs:
 
       - name: Install Render CLI
         run: |
-          npm install -g @renderinc/cli
+          curl -fsSL https://render.com/download/cli/install.sh | bash
 
       - name: Configure Render
         run: |
