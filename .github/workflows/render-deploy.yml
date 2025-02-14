@@ -26,4 +26,4 @@ jobs:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
           CI: true
         run: |
-          render services deploy --id ${{ secrets.RENDER_SERVICE_ID }}
+          render deploys create ${{ secrets.RENDER_SERVICE_ID }} --output yaml --confirm
