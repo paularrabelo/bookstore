@@ -12,6 +12,17 @@ jobs:
     
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
       - uses: actions/checkout@v2  
 
@@ -32,15 +43,17 @@ jobs:
       - name: Instalar dependências
         run: poetry install  
 
+      - name: Configurar banco de dados para testes
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/testdb
+        run: |
+          echo "DATABASE_URL=$DATABASE_URL" >> .env
+
+      - name: Aplicar migrações
+        run: poetry run python manage.py migrate  
+
       - name: Executar testes
         run: poetry run python manage.py test  
-
-      - name: Executar migrações
-        run: poetry run python manage.py migrate  
-        env:
-          SQL_HOST: ${{ secrets.SQL_HOST }}  
-          SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
-          SQL_USER: ${{ secrets.SQL_USER }}
 
   deploy:
     name: Deploy
