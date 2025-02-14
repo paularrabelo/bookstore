@@ -1,4 +1,4 @@
-name: Python application
+name: Render deploy
 
 on: [push]
 
@@ -12,48 +12,32 @@ jobs:
     
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: testdb
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
     steps:
-      - uses: actions/checkout@v2  
+    - uses: actions/checkout@v2  
 
-      - name: Configurar Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}  
+    - name: Configurar Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}  
 
-      - name: Instalar Poetry ${{ matrix.poetry-version }}
-        run: |
-          python -m ensurepip
-          python -m pip install --upgrade pip
-          python -m pip install poetry==${{ matrix.poetry-version }}  
+    - name: Instalar Poetry ${{ matrix.poetry-version }}
+      run: |
+        python -m ensurepip
+        python -m pip install --upgrade pip
+        python -m pip install poetry==${{ matrix.poetry-version }}  # Instala a versão do Poetry definida na matriz
+    - name: Verificar instalação do Poetry
+      run: poetry --help  
+    - name: Instalar dependências
+      run: poetry install  
+    - name: Executar testes
+      run: poetry run python manage.py test  
 
-      - name: Verificar instalação do Poetry
-        run: poetry --help  
-
-      - name: Instalar dependências
-        run: poetry install  
-
-      - name: Configurar banco de dados para testes
-        env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/testdb
-        run: |
-          echo "DATABASE_URL=$DATABASE_URL" >> .env
-
-      - name: Aplicar migrações
-        run: poetry run python manage.py migrate  
-
-      - name: Executar testes
-        run: poetry run python manage.py test  
+    - name: Executar migrações
+      run: poetry run python manage.py migrate  
+      env:
+        SQL_HOST: ${{ secrets.SQL_HOST }}  
+        SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
+        SQL_USER: ${{ secrets.SQL_USER }}
 
   deploy:
     name: Deploy
@@ -61,16 +45,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
-
-      - name: Install Render CLI
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/render-oss/cli/refs/heads/main/bin/install.sh | sh
-
-      - name: Deploy to Render
-        env:
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-          CI: true
-        run: |
-          render deploys create ${{ secrets.RENDER_SERVICE_ID }} --output yaml --confirm
+      - name: Deploy para produção
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.RENDER_SERVICE_ID }}  
+          api-key: ${{ secrets.RENDER_API_KEY }}  
