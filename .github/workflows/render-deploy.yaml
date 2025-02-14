@@ -26,5 +26,6 @@ jobs:
           -d '{
             "clearCache": "do_not_clear",
             "commit": "${{ github.sha }}",
+            "command": "python manage.py makemigrations"
             "command": "python manage.py migrate"
           }'
