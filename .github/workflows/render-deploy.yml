@@ -20,10 +20,7 @@ jobs:
       - name: Install Render CLI
         run: |
           # Baixe e instale o Render CLI
-          curl -L https://github.com/render-oss/cli/releases/download/v1.1.0/cli_1.1.0_linux_amd64.zip -o render.zip
-          unzip render.zip
-          sudo mv cli_v1.1.0 /usr/local/bin/render
-          render --version
+          curl -fsSL https://raw.githubusercontent.com/render-oss/cli/refs/heads/main/bin/install.sh | sh
 
       - name: Configure Render
         run: |
