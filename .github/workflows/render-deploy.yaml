@@ -33,10 +33,10 @@ jobs:
         run: poetry install
 
       - name: Executar testes
-        run: python manage.py test
+        run: poetry run python manage.py test
 
       - name: Executar migrações
-        run: python manage.py migrate
+        run: poetry run python manage.py migrate
         env:
           SQL_HOST: ${{ secrets.SQL_HOST }}
           SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
