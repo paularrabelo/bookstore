@@ -1,53 +1,29 @@
-name: Python application
 
-on: [push]
+name: Push Container to Render
+
+on:
+  push:
+    branches:
+      - 'main'
 
 jobs:
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: [3.12]
-        poetry-version: [2.0]
-    
+  render-deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2  
+      - name: Check out repository
+        uses: actions/checkout@v2
 
-    - name: Configurar Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}  
-
-    - name: Instalar Poetry ${{ matrix.poetry-version }}
-      run: |
-        python -m ensurepip
-        python -m pip install --upgrade pip
-        python -m pip install poetry==${{ matrix.poetry-version }}  # Instala a versão do Poetry definida na matriz
-
-    - name: Verificar instalação do Poetry
-      run: poetry --help  
-    - name: Instalar dependências
-      run: poetry install  
-    - name: Executar testes
-      run: poetry run python manage.py test  
-
-    - name: Executar migrações
-      run: poetry run python manage.py migrate  
-      env:
-        SQL_HOST: ${{ secrets.SQL_HOST }}  
-        SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
-        SQL_USER: ${{ secrets.SQL_USER }}
-
-  deploy:
-    name: Deploy
-    needs: [build]  
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy para produção
-        uses: render-actions/deploy@v1
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          service-id: ${{ secrets.RENDER_SERVICE_ID }}  
-          api-key: ${{ secrets.RENDER_API_KEY }}  
+          python-version: '3.12'
+
+      - name: Install Render CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/render-oss/cli/refs/heads/main/bin/install.sh | sh
+      - name: Configure Render
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          CI: true
+        run: |
+          render deploys create ${{ secrets.RENDER_SERVICE_ID }} --output yaml --confirm
