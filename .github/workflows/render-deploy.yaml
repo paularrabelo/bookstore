@@ -12,9 +12,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: Instalar dependências
-        run: pip install -r requirements.txt
-
       - name: Deploy Render
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
