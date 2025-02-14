@@ -17,11 +17,7 @@ jobs:
         with:
           python-version: '3.12'  # Escolha a versão do Python que sua aplicação usa
 
-      - name: Install Render CLI
-        run: |
-          pip install render-cli
-
-      - name: Configure Render CLI
+      - name: Configure Render
         run: |
           render config set --api-key $RENDER_API_KEY
         env:
