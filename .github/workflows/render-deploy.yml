@@ -20,7 +20,7 @@ jobs:
       - name: Install Render CLI
         run: |
           # Instale o Render CLI usando o script oficial
-          curl -fsSL https://cli.render.com/install.sh | bash
+          curl -fsSL https://raw.githubusercontent.com/render-oss/cli/refs/heads/main/bin/install.sh | sh
 
       - name: Configure Render
         run: |
