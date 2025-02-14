@@ -19,8 +19,8 @@ jobs:
 
       - name: Install Render CLI
         run: |
-          # Substitua este comando pelo método de instalação correto do Render CLI
-          curl -fsSL https://render.com/download/cli/install.sh | bash
+          # Instale o Render CLI usando o script oficial
+          curl -fsSL https://cli.render.com/install.sh | bash
 
       - name: Configure Render
         run: |
