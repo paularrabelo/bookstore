@@ -1,19 +1,44 @@
-on:
-  pull_request:
-  push:
-    branches: [main]
+name: Python application
+
+on: [push]
 
 jobs:
-  ci:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.12]
+        poetry-version: [2.0]
+
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Migrations
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install poetry ${{ matrix.poetry-version }}
         run: |
-          python manage.py migrate
+          python -m ensurepip
+          python -m pip install --upgrade pip
+          python -m pip install poetry==${{ matrix.poetry-version }}
+
+      - name: View poetry --help
+        run: poetry --help
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Migrate
+        run: poetry run python manage.py migrate
+
+      - name: Test
+        run: poetry run python manage.py test
 
       - name: Deploy
-        # Only run this step if the branch is main
         if: github.ref == 'refs/heads/main'
         env:
           deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
