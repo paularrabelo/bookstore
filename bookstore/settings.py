@@ -148,4 +148,4 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'bookstore-api-ucfn.onrender.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'bookstore-api-paula-b04cc18158e4.herokuapp.com']
