@@ -37,10 +37,3 @@ jobs:
 
       - name: Test
         run: poetry run python manage.py test
-
-      - name: Deploy
-        if: github.ref == 'refs/heads/main'
-        env:
-          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
-        run: |
-          curl "$deploy_url"
