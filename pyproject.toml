@@ -18,6 +18,7 @@ python-decouple = "^3.8"
 whitenoise = "^6.9.0"
 gunicorn = "^23.0.0"
 gitpython = "^3.1.44"
+dj-database-url = "^2.3.0"
 
 [build-system]
 requires = ["poetry-core"]
